@@ -115,6 +115,7 @@ package com;
 		protected void initializeWorld() {
 			// create the world
 			this.world = new World();
+			this.world.setGravity(this.world.ZERO_GRAVITY);
 			
 			// create all your bodies/joints
 			
@@ -126,50 +127,6 @@ package com;
 			// move the floor down a bit
 			floor.translate(0.0, -4.0);
 			this.world.addBody(floor);
-			
-			// create a triangle object
-			Triangle triShape = new Triangle(
-					new Vector2(0.0, 0.5), 
-					new Vector2(-0.5, -0.5), 
-					new Vector2(0.5, -0.5));
-			game.Object triangle = new game.Object();
-			triangle.addFixture(triShape);
-			triangle.setMass(MassType.NORMAL);
-			triangle.translate(-1.0, 2.0);
-			// test having a velocity
-			triangle.getLinearVelocity().set(5.0, 0.0);
-			this.world.addBody(triangle);
-			
-			// create a circle
-			Circle cirShape = new Circle(0.5);
-			game.Object circle = new game.Object();
-			circle.addFixture(cirShape);
-			circle.setMass(MassType.NORMAL);
-			circle.translate(2.0, 2.0);
-			// test adding some force
-			circle.applyForce(new Vector2(-100.0, 0.0));
-			// set some linear damping to simulate rolling friction
-			circle.setLinearDamping(0.05);
-			this.world.addBody(circle);
-			
-			// try a rectangle
-			Rectangle rectShape = new Rectangle(1.0, 1.0);
-			game.Object rectangle = new game.Object();
-			rectangle.addFixture(rectShape);
-			rectangle.setMass(MassType.NORMAL);
-			rectangle.translate(0.0, 2.0);
-			rectangle.getLinearVelocity().set(-5.0, 0.0);
-			this.world.addBody(rectangle);
-			
-			// try a polygon with lots of vertices
-			Polygon polyShape = Geometry.createUnitCirclePolygon(10, 1.0);
-			game.Object polygon = new game.Object();
-			polygon.addFixture(polyShape);
-			polygon.setMass(MassType.NORMAL);
-			polygon.translate(-2.5, 2.0);
-			// set the angular velocity
-			polygon.setAngularVelocity(Math.toRadians(-20.0));
-			this.world.addBody(polygon);
 			
 			// try a compound object
 			Circle c1 = new Circle(0.5);
@@ -193,7 +150,15 @@ package com;
 			// Test Snake
 			
 			game.Snake slither = new game.Snake();
-			slither.addFixture(Geometry.createIsoscelesTriangle(1.0, 3.0));
+			Circle head = new Circle(0.5);
+			BodyFixture headFixture = new BodyFixture(head);
+			c1Fixture.setDensity(0.5);
+			
+			for (Circle segment : slither.getSegments()) {
+				slither.addFixture(segment);
+			}
+			
+			slither.addFixture(headFixture);
 			slither.setMass(MassType.NORMAL);
 			slither.translate(2.0, 3.0);
 			this.world.addBody(slither);
