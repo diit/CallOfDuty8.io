@@ -190,35 +190,14 @@ package com;
 			capsule.translate(0.0, 4.0);
 			this.world.addBody(capsule);
 			
-			game.Object issTri = new game.Object();
-			issTri.addFixture(Geometry.createIsoscelesTriangle(1.0, 3.0));
-			issTri.setMass(MassType.NORMAL);
-			issTri.translate(2.0, 3.0);
-			this.world.addBody(issTri);
+			// Test Snake
 			
-			game.Object equTri = new game.Object();
-			equTri.addFixture(Geometry.createEquilateralTriangle(2.0));
-			equTri.setMass(MassType.NORMAL);
-			equTri.translate(3.0, 3.0);
-			this.world.addBody(equTri);
+			game.Snake slither = new game.Snake();
+			slither.addFixture(Geometry.createIsoscelesTriangle(1.0, 3.0));
+			slither.setMass(MassType.NORMAL);
+			slither.translate(2.0, 3.0);
+			this.world.addBody(slither);
 			
-			game.Object rightTri = new game.Object();
-			rightTri.addFixture(Geometry.createRightTriangle(2.0, 1.0));
-			rightTri.setMass(MassType.NORMAL);
-			rightTri.translate(4.0, 3.0);
-			this.world.addBody(rightTri);
-			
-			game.Object cap = new game.Object();
-			cap.addFixture(new Capsule(1.0, 0.5));
-			cap.setMass(MassType.NORMAL);
-			cap.translate(-3.0, 3.0);
-			this.world.addBody(cap);
-			
-			game.Object slice = new game.Object();
-			slice.addFixture(new Slice(0.5, Math.toRadians(120)));
-			slice.setMass(MassType.NORMAL);
-			slice.translate(-3.0, 3.0);
-			this.world.addBody(slice);
 		}
 		
 		/**
