@@ -4,7 +4,9 @@ package com;
 	import java.awt.Color;
 	import java.awt.Dimension;
 	import java.awt.Graphics2D;
-	import java.awt.Toolkit;
+import java.awt.MouseInfo;
+import java.awt.Point;
+import java.awt.Toolkit;
 	import java.awt.event.WindowAdapter;
 	import java.awt.event.WindowEvent;
 	import java.awt.geom.AffineTransform;
@@ -17,7 +19,9 @@ package com;
 	import org.dyn4j.dynamics.Body;
 	import org.dyn4j.dynamics.BodyFixture;
 	import org.dyn4j.dynamics.World;
-	import org.dyn4j.geometry.Capsule;
+import org.dyn4j.dynamics.joint.DistanceJoint;
+import org.dyn4j.dynamics.joint.PinJoint;
+import org.dyn4j.geometry.Capsule;
 	import org.dyn4j.geometry.Circle;
 	import org.dyn4j.geometry.Convex;
 	import org.dyn4j.geometry.Geometry;
@@ -27,6 +31,8 @@ package com;
 	import org.dyn4j.geometry.Slice;
 	import org.dyn4j.geometry.Triangle;
 	import org.dyn4j.geometry.Vector2;
+
+import game.Segment;
 
 	/**
 	 * Class used to show a simple example of using the dyn4j project using
@@ -58,6 +64,9 @@ package com;
 		
 		/** The time stamp for the last iteration */
 		protected long last;
+		
+		// Mouse
+		Point mouse = MouseInfo.getPointerInfo().getLocation();
 		
 		/**
 		 * Default constructor for the window
@@ -115,7 +124,7 @@ package com;
 		protected void initializeWorld() {
 			// create the world
 			this.world = new World();
-			this.world.setGravity(this.world.ZERO_GRAVITY);
+//			this.world.setGravity(this.world.ZERO_GRAVITY);
 			
 			// create all your bodies/joints
 			
@@ -128,41 +137,27 @@ package com;
 			floor.translate(0.0, -4.0);
 			this.world.addBody(floor);
 			
-			// try a compound object
-			Circle c1 = new Circle(0.5);
-			BodyFixture c1Fixture = new BodyFixture(c1);
-			c1Fixture.setDensity(0.5);
-			Circle c2 = new Circle(0.5);
-			BodyFixture c2Fixture = new BodyFixture(c2);
-			c2Fixture.setDensity(0.5);
-			Rectangle rm = new Rectangle(2.0, 1.0);
-			// translate the circles in local coordinates
-			c1.translate(-1.0, 0.0);
-			c2.translate(1.0, 0.0);
-			game.Object capsule = new game.Object();
-			capsule.addFixture(c1Fixture);
-			capsule.addFixture(c2Fixture);
-			capsule.addFixture(rm);
-			capsule.setMass(MassType.NORMAL);
-			capsule.translate(0.0, 4.0);
-			this.world.addBody(capsule);
-			
 			// Test Snake
-			
 			game.Snake slither = new game.Snake();
-			Circle head = new Circle(0.5);
-			BodyFixture headFixture = new BodyFixture(head);
-			c1Fixture.setDensity(0.5);
 			
-			for (Circle segment : slither.getSegments()) {
-				slither.addFixture(segment);
+			// Build Body
+			Segment last = null;
+			for (Segment segment : slither.segments) {
+				this.world.addBody(segment);
+				if (last != null) {
+					DistanceJoint dj = new DistanceJoint(last, segment, new Vector2(0.5, 0.0), new Vector2(0.0, 0.0));
+					this.world.addJoint(dj);
+				}
+				last = segment;
 			}
 			
-			slither.addFixture(headFixture);
-			slither.setMass(MassType.NORMAL);
-			slither.translate(2.0, 3.0);
+			// Attach head
 			this.world.addBody(slither);
-			
+//			DistanceJoint dj = new DistanceJoint(last, slither, new Vector2(0.0, 0.0), new Vector2(0.0, 0.0));
+			PinJoint pj = new PinJoint(slither, new Vector2(mouse.getX(), mouse.getY()), 0.2, 0.2, 0.2);
+//			this.world.addJoint(dj);
+			this.world.addJoint(pj);
+			System.out.println("UPDATED :" + pj);
 		}
 		
 		/**
@@ -204,6 +199,10 @@ package com;
 		 * the game, graphics, and poll for input.
 		 */
 		protected void gameLoop() {
+			// Update mouse pos
+			mouse = MouseInfo.getPointerInfo().getLocation();
+//			System.out.println(mouse);
+			
 			// get the graphics object to render to
 			Graphics2D g = (Graphics2D)this.canvas.getBufferStrategy().getDrawGraphics();
 			
