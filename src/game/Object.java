@@ -17,7 +17,7 @@ import org.dyn4j.geometry.Convex;
  */
 public class Object extends Body {
 	/** The color of the object */
-	protected Color color;
+	public Color color;
 	
 	/**
 	 * Default constructor.

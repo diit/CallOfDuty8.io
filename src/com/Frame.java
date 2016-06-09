@@ -4,6 +4,7 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
@@ -11,11 +12,13 @@ import java.awt.event.WindowEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferStrategy;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import org.dyn4j.dynamics.World;
+import org.dyn4j.geometry.Vector2;
 
 /**
  * A simple scene of a bowling ball bouncing on the floor.
@@ -50,6 +53,10 @@ public abstract class Frame extends JFrame {
 	
 	/** The time stamp for the last iteration */
 	private long last;
+	
+	/** BG images */
+	private Image bg;
+	
 	
 	/**
 	 * Constructor.
@@ -97,7 +104,7 @@ public abstract class Frame extends JFrame {
 		
 		// make the JFrame not resizable
 		// (this way I dont have to worry about resize events)
-		this.setResizable(false);
+		this.setResizable(true);
 		
 		// size everything
 		this.pack();
@@ -211,6 +218,11 @@ public abstract class Frame extends JFrame {
 		AffineTransform move = AffineTransform.getTranslateInstance(w / 2, -h / 2);
 		g.transform(yFlip);
 		g.transform(move);
+		
+		// Translate & scale via camera
+		Vector2 offset = COD8.getCamera().getTranslation();
+		double scale = COD8.getCamera().getScale();
+		g.translate(offset.x, offset.y);
 	}
 	
 	/**
@@ -220,10 +232,12 @@ public abstract class Frame extends JFrame {
 	protected void clear(Graphics2D g) {
 		final int w = this.canvas.getWidth();
 		final int h = this.canvas.getHeight();
-		
-		// lets draw over everything with a white background
-		g.setColor(Color.WHITE);
-		g.fillRect(-w / 2, -h / 2, w, h);
+//		
+//		// lets draw over everything with a white background
+//		g.setColor(Color.WHITE);
+//		g.fillRect(-w / 2, -h / 2, w, h);
+//		bg = new Image("bg.jpg");
+//		g.drawImage(new ImageIcon(bg).getImage(), 0, 0, w, h, this);
 	}
 	
 	/**
@@ -241,6 +255,8 @@ public abstract class Frame extends JFrame {
 			game.Object body = (game.Object) this.world.getBody(i);
 			this.render(g, elapsedTime, body);
 		}
+		
+		g.drawString("TEST", 100, 100);
 	}
 	
 	/**
