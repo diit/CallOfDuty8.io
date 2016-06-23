@@ -8,17 +8,15 @@ import org.dyn4j.geometry.Mass;
 import org.dyn4j.geometry.MassType;
 import org.dyn4j.geometry.Vector2;
 
-public class Segment extends Object {
+public class Orb extends Object {
 	
-	public Segment(int index) {
-		Circle segment = new Circle(0.2);
+	public Orb(Vector2 coords) {
+		Circle segment = new Circle(0.15);
 		BodyFixture segmentFixture = new BodyFixture(segment);
-		segmentFixture.setDensity(0.0000001);
 		this.addFixture(segmentFixture);
-		this.setMass(MassType.NORMAL);
-		this.translate(new Vector2(-0.1-(0.2*index),0));
-		this.color = Color.green;
-//		segmentFixture.
+		this.setMass(MassType.INFINITE);
+		this.translate(coords);
+		this.color = new Color((int) ((Math.random() * 255) % 255), (int) ((Math.random() * 255) % 255), (int) ((Math.random() * 255) % 255));
 	}
 
 }

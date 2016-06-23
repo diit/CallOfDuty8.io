@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class Snake{
 	
 	// Define length
-	public int length = 1;
+	public int length = 100;
 	
 	// Define Segments
 	public ArrayList<Segment> segments = new ArrayList<Segment>();

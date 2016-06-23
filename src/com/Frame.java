@@ -236,8 +236,13 @@ public abstract class Frame extends JFrame {
 //		// lets draw over everything with a white background
 //		g.setColor(Color.WHITE);
 //		g.fillRect(-w / 2, -h / 2, w, h);
-//		bg = new Image("bg.jpg");
-//		g.drawImage(new ImageIcon(bg).getImage(), 0, 0, w, h, this);
+		bg = new ImageIcon("img/bg.jpg").getImage();
+		
+		for (int x = -30; x <= 70; x++) {
+			for (int y = -30; y <= 70; y++) {
+				g.drawImage(bg, x*w, y*h, w, h, this);
+			}
+		}
 	}
 	
 	/**
@@ -255,8 +260,6 @@ public abstract class Frame extends JFrame {
 			game.Object body = (game.Object) this.world.getBody(i);
 			this.render(g, elapsedTime, body);
 		}
-		
-		g.drawString("TEST", 100, 100);
 	}
 	
 	/**
